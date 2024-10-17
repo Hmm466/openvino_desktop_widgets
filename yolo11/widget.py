@@ -17,7 +17,7 @@ from widgets.plugins_install_dialog import PlugInstallDialog
 from widgets.qfluentwidgets import PushButton, qconfig
 import requests
 from tqdm import tqdm
-import numpy as np
+# import numpy as np
 
 from widgets.setting_interface import SystemConfig
 
@@ -159,7 +159,7 @@ class Widget(QObject):
                 self.targetCombox.clear()
                 self.targetCombox.addItem("local image")
                 count = self.get_camera_count()
-                print(f"camera count:{count}")
+                print(f"camera count:{count - 1}")
                 for i in range(count - 1):
                     self.targetCombox.addItem(f"Camera:{i}")
                 # self.targetCombox.addItem("相机0")
@@ -283,6 +283,7 @@ class Widget(QObject):
         try:
             # Create a video player to play with target fps.
             # Start capturing.
+            import numpy as np
             processing_times = collections.deque()
             while self.running:
                 # Grab the frame.
@@ -449,9 +450,8 @@ class Widget(QObject):
             self.update_status_signal.emit(6, 0, "", 0)
             return
         else:
-            pip_plugins.move_library_to_internal()
+            # pip_plugins.move_library_to_internal()
             #reinstall numpy to the latest version
             print("reinstall numpy to the latest version")
-            pip_plugins.reinstall_python_package("numpy", "numpy")
             pip_plugins.move_library_to_internal()
             self.update_status_signal.emit(4, 0, "", 0)
