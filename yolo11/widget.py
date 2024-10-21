@@ -125,7 +125,9 @@ class Widget(QObject):
         self.update_status_signal.connect(self.update_status_callback)
         self.downProgressBar.setVisible(False)
 
-    all_model = {"object-detection":["yolo11n", "yolo11s", "yolo11m", "yolo11l", "yolo11x"]}
+    all_model = {"object-detection":["yolo11n", "yolo11s", "yolo11m", "yolo11l", "yolo11x"]
+                 ,"keypoint-detection":["yolo11n-pose","yolo11s-pose","yolo11m-pose","yolo11l-pose","yolo11x-pose"]
+                 ,"instance-segmentation":["yolo11n-seg","yolo11s-seg","yolo11m-seg","yolo11l-seg","yolo11x-seg"]}
 
     all_model_download_url = {
         "object-detection": {
@@ -134,6 +136,20 @@ class Widget(QObject):
             "yolo11m": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11m.pt",
             "yolo11l": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11l.pt",
             "yolo11x": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11x.pt"
+        },
+        "keypoint-detection": {
+            "yolo11n-pose": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n-pose.pt",
+            "yolo11s-pose": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11s-pose.pt",
+            "yolo11m-pose": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11m-pose.pt",
+            "yolo11l-pose": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11l-pose.pt",
+            "yolo11x-pose": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11x-pose.pt",
+        },
+        "instance-segmentation": {
+            "yolo11n-seg": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n-seg.pt",
+            "yolo11s-seg": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11s-seg.pt",
+            "yolo11m-seg": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11m-seg.pt",
+            "yolo11l-seg": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11l-seg.pt",
+            "yolo11x-seg": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11x-seg.pt",
         }
     }
 
@@ -166,7 +182,9 @@ class Widget(QObject):
                 self.targetCombox.addItem("find camera")
                 self.find_camera_ing = False
         else:
-            pass
+            self.modelCombox.clear()
+            for model in self.all_model[self.typeCombox.currentText()]:
+                self.modelCombox.addItem(model)
 
     def get_camera_count(self):
         # 获取可用的摄像头数量
@@ -216,6 +234,13 @@ class Widget(QObject):
             threading.Thread(target=self.download_model_thread).start()
             self.mainBtn.setEnabled(False)
             return
+        self.task = None
+        if self.model_type == "object-detection":
+            self.task = "detect"
+        elif self.model_type == "keypoint-detection":
+            self.task = "pose"
+        elif self.model_type == "instance-segmentatio":
+            self.task = "segment"
         target_device = self.targetCombox.currentText()
         self.system_config = SystemConfig()
         qconfig.load("config.json", self.system_config)
@@ -238,7 +263,7 @@ class Widget(QObject):
             if "GPU" in device.value or ("AUTO" in device.value and "GPU" in core.available_devices):
                 ov_config = {"GPU_DISABLE_WINOGRAD_CONVOLUTION": "YES"}
             det_compiled_model = core.compile_model(det_ov_model, device.value, ov_config)
-            det_model = YOLO(det_model_path.parent, task="detect")
+            det_model = YOLO(det_model_path.parent, task=self.task)
             if det_model.predictor is None:
                 custom = {"conf": 0.25, "batch": 1, "save": False, "mode": "predict"}  # method defaults
                 args = {**det_model.overrides, **custom}
@@ -270,7 +295,7 @@ class Widget(QObject):
         if "GPU" in device.value or ("AUTO" in device.value and "GPU" in core.available_devices):
             ov_config = {"GPU_DISABLE_WINOGRAD_CONVOLUTION": "YES"}
         det_compiled_model = core.compile_model(det_ov_model, device.value, ov_config)
-        det_model = YOLO(det_model_path.parent, task="detect")
+        det_model = YOLO(det_model_path.parent, task=self.task)
 
         if det_model.predictor is None:
             custom = {"conf": 0.25, "batch": 1, "save": False, "mode": "predict"}  # method defaults
