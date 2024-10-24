@@ -1,0 +1,19 @@
+{
+  "name": "PaddleOCR",
+  "author": "HuangMingming",
+  "describe": "",
+  "icon": "ico.png",
+  "url": "",
+  "github": "",
+  "load":true,
+  "library": [
+    {
+      "name": "opencv-python",
+      "pkg": "cv2"
+    },
+    {
+      "name": "ultralytics==8.3.0",
+      "pkg": "ultralytics"
+    }
+  ]
+}

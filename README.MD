@@ -9,6 +9,7 @@ English | [简体中文](README_cn.md)
 An OpenVINO Desktop integrated widget repository for quickly experiencing OpenVINO ™ Desktop toolset. By downloading the repository and extracting it into OpenVINO Desktop tool, you can use OpenVINO out of the box ™ Various abilities, such as LLM, Yolo, audio, etc.
 
 ## 🚀 Getting Started
+You need to go to the https://github.com/Hmm466/openvino_desktop warehouse to download the desktop software. Although it is not open source yet, you can dynamically download LLM, Yolo, and OCR capabilities. You only need to download this warehouse and unzip it to _internal/openvino_desktop_widgets, then open the software to dynamically download libraries and models. You can experience AI without writing any code.
 
 ## ⚙️ System Requirements
 
