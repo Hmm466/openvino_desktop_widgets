@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from imghdr import tests
 
 import cv2
 import numpy as np
@@ -525,7 +526,7 @@ class PaddleOCR:
             thickness=1,
             lineType=cv2.LINE_AA,
         )
-        return draw_img
+        return draw_img,boxes,txts,scores
 
         # Preprocess for text detection.
     def image_preprocess(self, input_image, size):

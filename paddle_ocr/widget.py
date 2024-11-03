@@ -3,6 +3,7 @@ import subprocess
 import threading
 import time
 import traceback
+from imghdr import tests
 from pathlib import Path
 from urllib.request import urlopen
 import collections
@@ -218,9 +219,13 @@ class Widget(QObject):
 
             processing_times = collections.deque()
             # If the frame is larger than full HD, reduce size to improve the performance.
-            draw_img = processing.PaddleOCR().process_frame(frame, processing_times, det_compiled_model, det_output_layer, rec_compiled_model, rec_output_layer)
+            draw_img,boxes,txts,scores = processing.PaddleOCR().process_frame(frame, processing_times, det_compiled_model, det_output_layer, rec_compiled_model, rec_output_layer)
             img = cv2.resize(draw_img,
                              (self.resultImageLabel.width(), self.resultImageLabel.height()))
+            result_text = ""
+            for t in txts:
+                result_text += t + "\n"
+            self.resultLabel.setText(result_text)
             self.resultImageLabel.setPixmap(QPixmap.fromImage(self.mat_to_image(img)))
         elif target_device != "find camera":
             self.camera_index = self.targetCombox.currentIndex() - 1
@@ -284,12 +289,16 @@ class Widget(QObject):
                     print("Source ended")
                     break
                 # If the frame is larger than full HD, reduce size to improve the performance.
-                draw_img = processing.PaddleOCR().process_frame(frame, processing_times, det_compiled_model,
+                draw_img,boxes,txts,scores = processing.PaddleOCR().process_frame(frame, processing_times, det_compiled_model,
                                                                 det_output_layer,
                                                                 rec_compiled_model, rec_output_layer)
 
                 img = cv2.resize(draw_img,
                                  (self.resultImageLabel.width(), self.resultImageLabel.height()))
+                result_text = ""
+                for t in txts:
+                    result_text += t + "\n"
+                self.resultLabel.setText(result_text)
                 self.resultImageLabel.setPixmap(QPixmap.fromImage(self.mat_to_image(img)))
         except KeyboardInterrupt:
             print("Interrupted")
