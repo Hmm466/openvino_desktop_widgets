@@ -336,7 +336,7 @@ class Widget(QObject):
                                          "There is no model file locally, or the model file download failed.\nYou can try again or use scientific Internet access.\nIt may also be that there is not enough memory.",
                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             # 调用一个简单的shell命令，比如ls
-            subprocess.run(["taskkill", "/f", "/im", "LLM.exe"], shell=True)
+            subprocess.run(["taskkill", "/f", "/im", "openvino_desktop.exe"], shell=True)
         elif type == 6:
             if not self.install_dialog:
                 self.install_dialog.reject()
@@ -345,7 +345,7 @@ class Widget(QObject):
                                          "Failed to download the dependent library.\nYou can try again or use scientific Internet access.",
                                          QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             # 调用一个简单的shell命令，比如ls
-            subprocess.run(["taskkill", "/f", "/im", "LLM.exe"], shell=True)
+            subprocess.run(["taskkill", "/f", "/im", "openvino_desktop.exe"], shell=True)
         elif type == 7:
             self.downProgressBar.setValue(index)
         elif type == 8:
